@@ -1,4 +1,4 @@
-const { Client, Intents, Collection } = require('discord.js');
+const { Client, Intents, Collection, MessageEmbed } = require('discord.js');
 const { log } = require("./utils/console.js")
 const fs = require('node:fs');
 const path = require('node:path');
@@ -32,7 +32,7 @@ function loadSlash() {
             log("green", `Loaded slash command: ${cmd.data.name}.js`);
         } catch (err) {
             console.log(err.toString());
-            botLogger(new discord.MessageEmbed()
+            botLogger(new MessageEmbed()
                 .setTitle("Slash Command Error")
                 .setDescription(`Unable to load ${file}`)
                 .setColor("RED")
@@ -48,11 +48,11 @@ function loadEvents() {
     const commandFolder = fs.readdirSync(path.join(__dirname, "events")).filter((file) => file.endsWith(".js"));
     commandFolder.forEach((file) => {
         try {
-            let module = require(path.join(__dirname, "events", file));
+            let module = require(path.join(__dirname, "events", file))(client);
             log("green", `Loaded event: ${file}`);
         } catch (err) {
             console.log(err.toString());
-            botLogger(new discord.MessageEmbed()
+            botLogger(new MessageEmbed()
                 .setTitle("Events Error")
                 .setDescription(`Unable to load ${file}`)
                 .setColor("RED")
